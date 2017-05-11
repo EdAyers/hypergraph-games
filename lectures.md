@@ -361,4 +361,64 @@ So we are done.
     Is the winning time bounded? In other words, is there a $T$ such that on any $(K_n, K_S)$, with $n = N, N+1, N+2, \cdots$, P1 wins in time $\leq T$?
 
 
-    
+#### Lecture 5
+
+__Proposition 4:__  Open problem 4 is true if and only if open problem 6 is true. 
+That is; (the $(K_{\omega}, K_S)$ game is a P1 win) $\Leftrightarrow$ ($(K_N, K_S)$ is a win in bounded time)
+
+__Note:__ 
+WLOG. In $(K_t, K_S)$ or $(K_N, K_S)$, $t$-th move on board $K_{[2t]}$. Proof by induction on $t$.
+
+__proof $(6 \Rightarrow 4)$ :__ We have a $t$ such that P1 wins $(K_{2t)}, K_S)$ in time $\leq t$ (by choosing say $t \geq \frac{1}{2}R(S)$ ).
+To ensure $(K_{2t}, K_S)$ is a P1 win, say the strategy is $S$.
+To sin as P1 in $(K_N, K_S)$, follow strategy $S$ up to time $t$, which is well defined by the above note.
+
+__proof $(4 \Rightarrow 6)$:__ Suppose 6 is false. So for all $t$ there exists a $f(t)$ such that P2 can survive in $(K_{f(t)}, K_S)$ for time $\geq t$.
+Call this strategy $S_ t$. To draw as P2, in $(K_{\omega}, K_S)$, P1 starts, he joins point 1 to point 2. P2 can either draw from 1 or 2 to some other place or draw anywhere else. So infinitely many of the $S_ t$ pick the same reply, P2 plays there. 
+P1 now moves, then there are infinitely many (of _those_ infinitely many $S_t$)) which agree on P2's reply, P2 plays there.
+Continue this.
+At time $T$, P1's play has agreed with infinitely many $S_t$ join particular with some $S _t$, $t > T$. Hence P2 has not lost by time $T$.
+
+__Remark:__ That is a 'compactness argument' very similar to "in a compact metric space, every sequence has a convergent subsequence".
+
+__Fact:__ problem 5 is true if and only if it's true on the game $K_N \sqcup K_N$. 
+P1 has a winning strategy in which he starts on one copy of $K_ N$, stays there while P2 stays there _and_ can stay there for the move immediately after P2 first plays in the other board.
+
+Last time this course was given this fact was an open question. Now it has been proven by Bowler.
+
+Could $(K_N, K_4)$ be a win *not* in bounded time? Suppose that making $K_4 - e$, is much easier than making a $K_4$. Suppose also that making an (isolated) $K_4 - e$ does not help you make a $K_4$. As P2, we make a $K_4 - e$ too, $P1$ must reply to block the win.
+P2 can now play to a new vertex from a vertex not connected to P1's last move. If P1 does not respond nearby, then P2 can make a double-threat and win on the next move. So P1 must play between the tetrahedron and this new point. But now P2 can play to a new vertex and so on forever. So P2 can get P1 into a loop foreve if the graph is infinite.
+
+Recently, six authors Hefetz, Kusch, Narins, Pokrovsky, Requice, Sarid gave a 5-graph $H$ (a collection of 5-sets) such that on $(K_{\omega}, H)$, P2 can draw. By making a load of threats that P1 can't ignore. An amazing counterexample.
+
+Similarly, maybe 5-in-a-row is a win but not in bounded time, by something along the above reasonings. That is, there is some strategy for P2, playing arbitrarily far away (distance $l$) such that we have a P1 win in time $l^2$.
+
+## Maker breaker games
+
+In the __maker-breaker game__ on $H$, P1 wins if he occupies an $L \in H$ and P2 wins otherwise. So we don't have to worry about P2 winning by occupying a line. We call this the __strong version__ of a hypergraph game. P1 is the __maker__ and P2 is called the __breaker__.
+
+__Example:__ on $[3]^2$
+
+```
+
+3 2 2'
+5 1 -
+- - -
+
+```
+
+Start at 1 - P2 plays 2 or 2'.
+Now P1 plays 3 - P2 must play 4
+Now P1 plays 5 and wins on the next move.
+
+Why should we study maker-breaker games? 
+
+1) Trying to 'make a line' is cleaner or more natural than the double goal of "make a line and stop your opponent from doing it first".
+
+2) Can give info on the strong game - eg if the breaker wins then the strong game is a draw.
+
+3) We have monotonicity; adding lines or points preserves maker wins. Eg, in the $[n]^d$ game, there's a __break-point__ $d_0$, this gives a breaker win for all $d < d_0$ and and a maker win for all $d > d_0$.  Eg, in $(K_N, K_S)$  there exists a break-point N_0 similarly.
+So far we know $N_0 \leq 4^S$ and $d_0 \leq$ is some iterated tower.
+
+4) "Thomason philosophy": The strong game is too delicate to be interesting. As P1's advantage at the start is at most one move.
+
