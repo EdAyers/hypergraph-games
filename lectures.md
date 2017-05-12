@@ -43,29 +43,16 @@ __Example:__ Ramsey game
 
 Take $N \geq S$. The $(K_N,K_S)$ __Ramsey game__ is played with $X$ being the set of unordered pairs in $[N]^2$. That is, the edges of $[N]$. $H$ is the set of all full subgraphs of $X$ with $k$ vertices. Players take turns to colour in edges.
 
-<div>
+<div style="display:flex">
 <script type="text/javascript" src="ramsey.js"></script>
-<div style="float:left; width: 33%">
-<div id="ramLeft"></div>
+<div id="ramLeft"   style="flex-grow : 1"></div>
+<div id="ramCenter" style="flex-grow : 1"></div>
+<div id="ramRight"  style="flex-grow : 1"></div>
 <script type="text/javascript">
-  var hexDiv = document.getElementById("ramLeft");
-  Elm.Ramsey.embed(hexDiv, {n:4, s:3});
+  Elm.Ramsey.embed(document.getElementById("ramLeft"), {n:4, s:3});
+  Elm.Ramsey.embed(document.getElementById("ramCenter"), {n:5, s:3});
+  Elm.Ramsey.embed(document.getElementById("ramRight"), {n:6, s:4});
 </script>
-</div>
-<div style="float: center; width: 33%">
-<div id="ramCenter"></div>
-<script type="text/javascript">
-  var hexDiv = document.getElementById("ramCenter");
-  Elm.Ramsey.embed(hexDiv, {n:5, s:3});
-</script>
-</div>
-<div style="float : right; width: 33%">
-<div id="ramRight"></div>
-<script type="text/javascript">
-  var hexDiv = document.getElementById("ramRight");
-  Elm.Ramsey.embed(hexDiv, {n:6, s:4});
-</script>
-</div>
 </div>
 
 __Example:__ Binary tree game
@@ -86,9 +73,9 @@ We say P1 __has a winning strategy__ if the start position is winning
 
 For any game, we can prove that exactly one of the following holds:
 
-i) P1 has a winning strategy
-ii) P2 has a winning strategy (that is, the starting position is losing)
-iii) Each player has a drawing strategy. 
+1. P1 has a winning strategy
+2. P2 has a winning strategy (that is, the starting position is losing)
+3. Each player has a drawing strategy. 
 
 This follows immediately for finite $X$, since we may assign a value to each state, working backwards from maximally coloured positions.
 
@@ -330,9 +317,9 @@ In fact, we can connect all of the vertices as there exists two disjoint spannin
 
 **Proposition 3:** If $G, H$ are P1 wins, then so is $G \sqcup H$. 
 
-**Notation:** The game *$G$-with-pass* means the game $G$ but now P2 is allowed to pass.
+**Notation:** The game **$G$-with-pass** means the game $G$ but now P2 is allowed to pass.
 
-**Definition:**  The *delay* of $G$ (for a P1 win) is the least $R$ such that there exists a winning strategy in the game $G$-with-pass in which P2 always passes $\leq R$ times.
+**Definition:**  The **delay** of $G$ (for a P1 win) is the least $R$ such that there exists a winning strategy in the game $G$-with-pass in which P2 always passes $\leq R$ times.
 Note that we are only dealing with _finite_ games here. Might not exist for infinite $X$.
 
 **Example:** Take the binary tree with depth 3 with a disjoint size 2 winning line $L$. Let's be player 1.
@@ -399,13 +386,23 @@ In the __maker-breaker game__ on $H$, P1 wins if he occupies an $L \in H$ and P2
 
 __Example:__ on $[3]^2$
 
-```
-
-3 2 2'
-5 1 -
-- - -
-
-```
+<table>
+  <tr>
+    <td>3</td>
+    <td>2</td>
+    <td>2'</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>1</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+</table>
 
 Start at 1 - P2 plays 2 or 2'.
 Now P1 plays 3 - P2 must play 4
