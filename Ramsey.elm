@@ -2,16 +2,15 @@ module Ramsey exposing (..)
 
 import Svg exposing (Attribute, Svg)
 import Svg.Attributes exposing (..)
-import Svg.Events exposing (onClick)
+import Svg.Events exposing (onMouseDown, onMouseUp)
 import Html
 import Set exposing (Set)
-
+import Mouse
 
 type alias RamseyConfig =
     { n : Int
     , s : Int
     }
-
 
 type alias RamseyAction =
     ( Int, Int )
@@ -22,7 +21,6 @@ type alias RamseyState =
     , s : Int
     , moves : List ( Int, Int )
     }
-
 
 type Player
     = P1
@@ -149,32 +147,38 @@ ramseyWin state =
         check P1 |> elseThen (\() -> check P2)
 
 
-ramseyView : RamseyState -> Svg RamseyAction
+ramseyView : State -> Svg Action
 ramseyView state =
     let
         range =
-            List.range 1 state.n
+            List.range 1 state.game.n
 
         count =
-            List.length state.moves
+            List.length state.game.moves
 
         vertPos i =
             let
                 t =
-                    2 * pi * (toFloat i) / (toFloat state.n)
+                    2 * pi * (toFloat i) / (toFloat state.game.n)
             in
                 ( cos (t), sin (t) )
 
-        vertexView : Int -> Svg msg
+        eventer : Int -> Attribute Action
+        eventer =
+            case state.dragState of
+            DragMoving _ _ _ -> \a -> onMouseUp (FinishDrag a)
+            _ ->  \a -> onMouseDown (StartDrag a)
+
+        vertexView : Int -> Svg Action
         vertexView i =
-            circle (vertPos i) 0.1 [ fill "darkgrey" ]
+            circle (vertPos i) 0.1 [ fill "darkgrey", eventer i]
 
         verticesView =
             range |> List.map vertexView
 
-        emptyLineView : ( Int, Int ) -> Svg RamseyAction
-        emptyLineView ( a, b ) =
-            line (vertPos a) (vertPos b) [ strokeWidth "0.1", onClick ( a, b ), stroke "lightgrey" ]
+        -- emptyLineView : ( Int, Int ) -> Svg RamseyAction
+        -- emptyLineView ( a, b ) =
+        --     line (vertPos a) (vertPos b) [ strokeWidth "0.1", onClick ( a, b ), stroke "lightgrey" ]
 
         moveView ( a, b ) player i =
             let
@@ -212,7 +216,7 @@ ramseyView state =
 
         ramseyWinView : List (Svg msg)
         ramseyWinView =
-            case ramseyWin state of
+            case ramseyWin state.game of
                 Nothing ->
                     []
 
@@ -223,13 +227,13 @@ ramseyView state =
         allLines =
             range |> List.concatMap (\i -> List.range 1 (i - 1) |> List.map (\j -> ( j, i )))
 
-        emptyLinesView =
-            allLines
-                |> List.filter (\pt -> not <| List.member pt state.moves)
-                |> List.map emptyLineView
+        -- emptyLinesView =
+        --     allLines
+        --         |> List.filter (\pt -> not <| List.member pt state.game.moves)
+        --         |> List.map emptyLineView
 
         fullLinesView =
-            state.moves
+            state.game.moves
                 |> List.indexedMap
                     (\i e ->
                         moveView e
@@ -240,9 +244,27 @@ ramseyView state =
                             )
                             (count - i)
                     )
+
+        dragView : List (Svg Action)
+        dragView =
+            case state.dragState of
+            DragMoving i s f ->
+                let 
+                    fx = toFloat f.x
+                    fy = toFloat f.y
+                    sy = toFloat s.y
+                    sx = toFloat s.x
+                    (vx, vy) = vertPos i
+                    x = ((fx - sx) / 100.0) + vx
+                    y = ((fy - sy) / 100.0) + vy
+                in
+                    [ line (vx, vy) (x,y) [ strokeWidth "0.05", stroke "green"]
+                    ]
+            _ -> []
     in
         Svg.g []
-            (emptyLinesView
+            (   
+                dragView
                 ++ fullLinesView
                 ++ ramseyWinView
                 ++ verticesView
@@ -261,10 +283,53 @@ svgFrame svg =
     Svg.svg [ version "1.1", viewBox (" -1.5 -1.5 3 3") ] [ svg ]
 
 
+type DragState 
+    = DragStart Int
+    | DragMoving Int Mouse.Position Mouse.Position
+    | DragNone
+
+
+type alias State =
+    { dragState : DragState
+    , game : RamseyState}
+
+type Action 
+    = StartDrag Int
+    | MoveDrag Mouse.Position
+    | AbortDrag
+    | FinishDrag Int
+
+update : Action -> State -> State
+update action state =
+    case action of
+    StartDrag a -> {state | dragState = DragStart a}
+    AbortDrag -> {state | dragState = DragNone}
+    MoveDrag pt ->
+        case state.dragState of
+        DragStart i -> {state | dragState = DragMoving i pt pt }
+        DragMoving i startPt _ -> {state | dragState = DragMoving i startPt pt }
+        _ -> state
+    FinishDrag b ->
+        case state.dragState of
+        DragNone -> state
+        DragStart a -> 
+          if a == b then {state | dragState = DragNone} else
+          {state | dragState = DragNone, game = ramseyUpdate (a,b) state.game} 
+        DragMoving a _ _ -> 
+          if a == b then {state | dragState = DragNone} else
+          {state | dragState = DragNone, game = ramseyUpdate (a,b) state.game} 
+
+subscriptions : State -> Sub Action
+subscriptions state =
+    case state.dragState of
+    DragStart i -> Mouse.moves (MoveDrag)
+    DragMoving _ _ _ -> Mouse.moves (MoveDrag)
+    _ -> Sub.none
+
 main =
     Html.programWithFlags
         { view = ramseyView >> svgFrame
-        , update = (\a m -> ( ramseyUpdate a m, Cmd.none ))
-        , init = \i -> ( ramseyInit i, Cmd.none )
-        , subscriptions = always Sub.none
+        , update = (\a m -> ( update a m, Cmd.none ))
+        , init = \i -> ( {game = ramseyInit i, dragState = DragNone}, Cmd.none )
+        , subscriptions = subscriptions
         }

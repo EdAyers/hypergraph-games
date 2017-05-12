@@ -11,7 +11,26 @@ __Example:__ Naughts and Crosses
 Write $[n]$ to mean the set $\{1, 2, \cdots , n\}$ (not zero indexed!).
 
 Take $X$ to be $[3]^2$ and $H$ to consist of all the vertical, horizontal and diagonal lines of length $3$. 
-Giving the classic 'naughts and crosses'.
+Giving the classic 'naughts and crosses'. Here, we use blue and orange to represent P1 and P2 respectively, and we write a move
+as a number expressing the move count when the move was played. In this way we can represent an entire sequence of moves on one graph
+
+<table>
+  <tr>
+    <td>6</td>
+    <td>2</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>1</td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>4</td>
+    <td>3</td>
+  </tr>
+</table>
 
 To generalise:
 
