@@ -1,3 +1,9 @@
+<style>
+.P1 {color : "blue";}
+.P2 {color : "orange";}
+</style>
+
+
 # Hypergraph Games
 
 Read _Combinatorial Games_ by  Beck.
@@ -109,7 +115,7 @@ So at the next time step, P1 is still not winning. So at no time can P1 cover a 
 
 #### Lecture 2
 
-##Strategy Stealing
+## Strategy Stealing
 
 __Proposition 1:__ A hypergraph game is never winning for P2. 
 
@@ -407,25 +413,25 @@ __Example:__ on $[3]^2$
 
 <table>
   <tr>
-    <td>3</td>
-    <td>2</td>
-    <td>2'</td>
+    <td class="P1">3</td>
+    <td class="P2">2</td>
+    <td class="P2">2'</td>
   </tr>
   <tr>
-    <td>5</td>
-    <td>1</td>
-    <td>-</td>
+    <td class="P1">5</td>
+    <td class="P1">1</td>
+    <td  class="P2">6</td>
   </tr>
   <tr>
     <td>-</td>
     <td>-</td>
-    <td>-</td>
+    <td  class="P2">4</td>
   </tr>
 </table>
 
 Start at 1 - P2 plays 2 or 2'.
 Now P1 plays 3 - P2 must play 4
-Now P1 plays 5 and wins on the next move.
+Now P1 plays 5 and wins on the next move. We don't have to worry about 6 because P2 can't win.
 
 Why should we study maker-breaker games? 
 
@@ -438,3 +444,84 @@ So far we know $N_0 \leq 4^S$ and $d_0 \leq$ is some iterated tower.
 
 4) "Thomason philosophy": The strong game is too delicate to be interesting. As P1's advantage at the start is at most one move.
 
+#### Lecture 6 
+
+## Pairing strategies
+
+To have a pairing strategy (that is, two points on each line, disjointly), we need any $k$ lines to cover at least $2k$ points for any $k$.
+This is sufficient as well, by the polygamous hall theorem. (To marry up each boy to 2 girls he knows, it is enough to have that any $k$ boys know $\geq 2k$ girls - to deduce from usual hall theorem, clone each boy)
+
+If all lines have size $n$, then it's enough to have $\mathrm{max deg} \leq \frac{n}{2}$. (Ie, each point is on $\leq \frac{n}{2}$ lines).
+Indeed, givin $k$ lines, containing $l$ points, we have the number of edges $= kn$ from left, and the number of edges is at most
+$\frac{n}{2}$ from right.
+so $\frac{n}{2} \geq kn$ ie, $\geq 2k $. 
+
+__Proposition 5:__ Breaker has a pairing strategy in the $[n]^d$ game for $d \leq (\log(n) - log(2)) / \log(3)$.
+
+__proof:__ Degree of a point $x$ is $\leq 3^t$ (each coord is 'up' or 'down' or 'constant'), 
+so we have a pairing strategy if $3^d \leq \frac{n}{2}$. Ie, if $d \log 3 \leq \log n - \log 2$.
+
+How far could we ever get a pairing strategy? We certainly need that the number of lines is at most half the number of points.
+That is, $(n + 2)^d - n^d \leq n^d$
+So $(1 + 2 / n)^d \leq 2$.
+So $d \log (1 + 2 / n) \leq \log 2$.
+But $\log (1 + 2 / n) \approx 2 / n$. 
+So condition is $2d / n \leq \log 2$. That is, $d \leq n \log 2 / 2$.
+
+Why is our Proposition 5 bound much worse than this? Because average degree is much much less that the maximum degree.
+To improve this, we want to 'truncate' each line by throwing out points with too many coordinates the same.
+
+__Proposition 6:__
+For $n \geq 12$, we can select for each line $L$ in $[n]^d$, a subset $L' \subset L $, with $|L'| \geq n / 2 - 1$ such that each point belongs to $\leq d^{4d/n}$ of the $L'$. This is small when $d = cn$.
+
+__Corolary 7:__ 
+Breaker has a pairing strategy in $[n]^d$ for $d \leq n / 8$.
+
+__proof of C7:__ 
+WLOG $n \geq 12$. Put $d = n / 8$. 
+We have MAX DEG (for the truncated lines) $\leq \sqrt{ n / 8} $. 
+So we are done if $\sqrt{n / 8} \leq 0.5 \cdot (n / 2 - 1)$.
+Which it is.
+
+__Hales-Jewett Conjecture:__
+There exists a pairing strategy if and only if the number of lines $\leq$ half the number of points.
+
+__Citrenbaum Conjecture:__
+$[n]^d$ is a maker win if $d > n$.
+
+__Gammill Conjecture:__
+The maker wins the $[n]^d$ game if the number of lines is greater than the number of points for $d > cn$. [See later for more deets]
+
+__proof of P6:__
+For a line $L$, say that a value $k \in [n]^d$ is __overused__ when the number of fixed coordinates (that is, not an 'up' or 'down') is equal to $k$ or $n + 1 - k > 4d / n$. We expect about $d/n$ $k$'s and $d/n$ $(n + 1 - k)$'s. So $2d / n$ in total, so 'overused' $=$ 'twice expected'.
+So $\leq n / 2$ values of $k$ are overused. Otherwise we have $> n / 4$, $4d / n$ fixed coordinates number. 
+Let $L' = \{ x \in L : x \text{ is the } k \text{'th point of } L \text{, with } k \text{ not overused and } k \neq n + 1 / 2 \}$.
+Thus $|L'| \geq n / 2 - 1$.  
+
+DRAW A CUBE. DRAW L IN IT. L' is dotty inside it. 
+
+Given a point $x \in [n]^d$, for how many lines $L$ do we have that $x$ is the $k$th point of $L$ _and_ $x \in L'$?
+Let $N_k = \{ i : x_i = k \vee n + 1 - k\}$.
+Then all active coordinates of $L$ lie in $N_k$.
+And moreover they are all but $\leq 4d / n$ points of $N_k$, (else $k$ is overloaded).
+Hence, the number of such $L$ is at most $|N_k ^{\leq 4d / n}|$.
+Sum over $k$: degree of $x$ is $\leq \sum_k |N_k ^{\leq 4d / n}| \leq |[d] ^{\leq 4d / n}| = \choose{d}{4d/n} + \choose{d}{4d/n - 1} + \cdots + \choose{d}{1} + \choose{d}{0}$.
+$\leq 2 \choose{d}{4d/n}$
+$\leq d ^ {4d / n}$.
+
+Recall the Hales-Jewett Conjecture. If this holds then we have a pairing strategy, which is the same as saying that the number of lines in $S$ divided by $|S|$ is $\leq 1/2$.
+
+More generally, we have the 
+
+__Ratio Conjecture:__ The number of lines in $S$ over $|S|$ is maximised at $S = [n]^d$.
+
+Christofides _disproved_ the ratio conjecture for any $n$, even $n = 3$.
+Look at $[3]^d$ for $d$ large. 
+Typical point of $[3]^d$ has about $d/3$ ones, $d/3$ twos and $d/3$ threes.
+A typical line has $d/5$ 'up', $d/5$ 'down' and $d/5$ each of 1,2,3.
+So points of that line have $2d/5$ ones, $d/5$ twos and $2d/5$ threes (first and last points).
+So points of that line have $d/5$ ones, $3d/5$ twos and $d/3$ threes (middle point).
+Those two subsets of $[n]^d$ are disjoint!
+Hence there exists $1 - o(1)$ ov ghd lindx shoxd union ix $o(1)$ of the points.
+
+(HJ conjecture still open).
